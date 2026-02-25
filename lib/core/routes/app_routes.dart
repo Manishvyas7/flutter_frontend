@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../features/dashboard/dashboard.dart';
-import '../../features/profile/profile.dart';
-import '../../features/auth/login.dart';
-import '../../features/auth/logout.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/logout_screen.dart';
+import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
+import '../../features/profile/presentation/screens/profile_screens.dart';
 
 class AppRoutes {
   static const String login = '/login';
@@ -14,25 +14,27 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case login:
-        return _buildRoute(const LoginPage());
+        return _buildRoute(const LoginScreen());
 
       case dashboard:
-        return _buildRoute(const Dashboard());
+        return _buildRoute(const DashboardScreen());
 
       case profile:
-        return _buildRoute(const ProfilePage());
+        return _buildRoute(const ProfileScreens());
 
       case logout:
-        return _buildRoute(const LogoutPage());
+        return _buildRoute(const LogoutScreen());
 
       default:
         return _errorRoute(settings.name);
     }
   }
 
-  // Safe reusable route builder
+  // Reusable route builder
   static MaterialPageRoute _buildRoute(Widget child) {
-    return MaterialPageRoute(builder: (_) => child);
+    return MaterialPageRoute(
+      builder: (_) => child,
+    );
   }
 
   // Error page instead of crash
@@ -45,7 +47,7 @@ class AppRoutes {
             style: const TextStyle(fontSize: 18),
           ),
         ),
-      ), 
+      ),
     );
   }
 }

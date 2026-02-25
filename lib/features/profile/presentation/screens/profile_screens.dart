@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../core/routes/routes.dart';
+import '../../../../core/routes/app_routes.dart';
 
 //------- Profile Page -------//
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfileScreens extends StatelessWidget {
+  const ProfileScreens({super.key});
 
   @override
   Widget build(BuildContext context) {

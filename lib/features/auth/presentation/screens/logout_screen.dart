@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../core/routes/routes.dart';
+import '../../../../core/routes/app_routes.dart';
 
-class LogoutPage extends StatelessWidget {
-  const LogoutPage({super.key});
+class LogoutScreen extends StatelessWidget {
+  const LogoutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

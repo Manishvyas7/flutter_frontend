@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/routes/app_routes.dart';
-
-//------- Profile Page -------//
+import '../screens/profile_menu_screens.dart';
 
 class ProfileScreens extends StatelessWidget {
   const ProfileScreens({super.key});
@@ -11,15 +9,28 @@ class ProfileScreens extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
-      ),
-      body: Center(
-        child: ElevatedButton(
+        centerTitle: true,
+
+        // 👈 Drawer/Menu icon on LEFT
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
           onPressed: () {
-            Navigator.pushNamed(context, AppRoutes.logout); // routes to the logout 
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const ProfileMenuScreen(),
+              ),
+            );
           },
-          child: const Text("Logout"),
+        ),
+      ),
+
+      body: const Center(
+        child: Text(
+          "Profile Content",
+          style: TextStyle(fontSize: 18),
         ),
       ),
     );
   }
-} 
+}

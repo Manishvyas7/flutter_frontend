@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/features/profile/presentation/screens/profile_screens.dart';
-import 'package:flutter_frontend/features/event/presentation/screens/create_event_screen.dart';
 import '../screens/widgets/stats_card.dart';
 import '../screens/widgets/event_card.dart';
 import '../screens/widgets/upcoming_event_card.dart';
 import '../screens/widgets/welcome_section.dart';
+import '../../../../features/users/presentation/screens/users_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -18,7 +18,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final List<Widget> _pages = const [
     DashboardHomePage(),
-    CreateEventScreen(),
+    UsersScreen(),
     ProfileScreens(),
   ];
 
@@ -52,8 +52,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               label: "Dashboard",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              label: "New",
+              icon: Icon(Icons.app_registration),
+              label: "User Table",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

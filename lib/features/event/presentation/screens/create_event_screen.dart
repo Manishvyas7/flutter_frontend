@@ -17,94 +17,108 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   DateTime? _selectedDate;
 
   @override
+  void dispose() {
+    // Dispose controllers (VERY IMPORTANT)
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _locationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create Event"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-              // Event Title
-              TextFormField(
-                controller: _titleController,
-                decoration: _inputDecoration("Event Title"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Please enter event title";
-                  }
-                  return null;
-                },
-              ),
+                // Event Title
+                TextFormField(
+                  controller: _titleController,
+                  decoration: _inputDecoration("Event Title"),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "Please enter event title";
+                    }
+                    return null;
+                  },
+                ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              // Description
-              TextFormField(
-                controller: _descriptionController,
-                maxLines: 4,
-                decoration: _inputDecoration("Description"),
-              ),
+                // Description
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 4,
+                  decoration: _inputDecoration("Description"),
+                ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              // Location
-              TextFormField(
-                controller: _locationController,
-                decoration: _inputDecoration("Location"),
-              ),
+                // Location
+                TextFormField(
+                  controller: _locationController,
+                  decoration: _inputDecoration("Location"),
+                ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              // Date Picker
-              GestureDetector(
-                onTap: _pickDate,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _selectedDate == null
-                            ? "Select Date"
-                            : "${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}",
-                      ),
-                      const Icon(Icons.calendar_today),
-                    ],
+                // Date Picker
+                GestureDetector(
+                  onTap: _pickDate,
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 16),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _selectedDate == null
+                              ? "Select Date"
+                              : "${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}",
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const Icon(Icons.calendar_today),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 30),
+                const SizedBox(height: 30),
 
-              // Create Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                  ),
-                  child: const Text(
-                    "Create Event",
-                    style: TextStyle(fontSize: 16),
+                // Create Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _submitForm,
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text(
+                      "Create Event",
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -118,12 +132,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
       ),
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
     );
   }
 
   // Date Picker Function
   Future<void> _pickDate() async {
-    DateTime? pickedDate = await showDatePicker(
+    final pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
@@ -139,11 +155,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
   // Submit Function
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Event Created Successfully!")),
+        const SnackBar(content: Text("Please select a date")),
       );
-      Navigator.pop(context);
+      return;
     }
+
+    // Here you can call API to create event
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Event Created Successfully!")),
+    );
+
+    Navigator.pop(context);
   }
 }

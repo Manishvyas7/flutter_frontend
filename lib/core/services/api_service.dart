@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import '../constants/api_constants.dart';
 
 class ApiService {
+
+  // -------- Methof for the Login API ------- //
+
   Future<Map<String, dynamic>> login({
     required String identifier,
     required String password,
@@ -30,4 +33,24 @@ class ApiService {
       throw Exception(data["message"] ?? "Login failed");
     }
   }
+
+  // ----------- LOGOUT METHOD FOR API's ------------- //
+  
+  Future<void> logout(String token) async {
+  final url = Uri.parse(
+      ApiConstants.baseUrl + ApiConstants.logoutEndpoint);
+
+  final response = await http.post(
+    url,
+    headers: {
+      "Content-Type": "application/json",
+      "accept": "application/json",
+      "Authorization": "Bearer $token",
+    },
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception("Logout failed");
+  }
+}
 }

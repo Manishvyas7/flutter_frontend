@@ -4,6 +4,7 @@ import '../../../core/services/api_service.dart';
 class AuthRepository {
   final ApiService _apiService = ApiService();
 
+  // ----------- Login Method --------------- //
   Future<bool> login(String email, String password) async {
     final response = await _apiService.login(
       identifier: email,
@@ -24,5 +25,19 @@ class AuthRepository {
     }
 
     return false;
+  }
+
+  // ----------- Logout Method --------------- //
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
+
+    if (token == null) {
+      throw Exception("Token missing");
+    }
+
+    await _apiService.logout(token);
+
+    await prefs.clear();
   }
 }

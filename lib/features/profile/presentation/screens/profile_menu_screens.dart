@@ -23,6 +23,11 @@ class ProfileMenuScreen extends StatelessWidget {
             onTap: () {},
           ),
           ListTile(
+            leading: const Icon(Icons.bookmark),
+            title: const Text("Saved"),
+            onTap: (){},
+          ),
+          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text("Logout"),
             onTap: () {

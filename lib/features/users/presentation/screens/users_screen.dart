@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/models/user_model.dart';
 import '../../data/services/users_service.dart';
+import '../../../users/presentation/widgets/create_new_user.dart';
 import '../../../users/presentation/widgets/search_bar.dart';
 
 class UsersScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class _UsersScreenState extends State<UsersScreen> {
   late Future<List<UserModel>> _usersFuture;
   final UsersService _usersService = UsersService();
 
-  // ✅ For search filtering
+  // Search lists
   List<UserModel> _allUsers = [];
   List<UserModel> _filteredUsers = [];
 
@@ -25,7 +26,7 @@ class _UsersScreenState extends State<UsersScreen> {
     _usersFuture = _usersService.fetchUsers();
   }
 
-  // ✅ Search function
+  // Search function
   void _searchUsers(String value) {
     setState(() {
       _filteredUsers = _allUsers.where((user) {
@@ -40,14 +41,24 @@ class _UsersScreenState extends State<UsersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         title: const Text("Users"),
         centerTitle: true,
 
-        // ✅ Create New User button
+        // Create New User Button
         actions: [
           TextButton.icon(
-            onPressed: () { // Navigate to create user screen
+            onPressed: () {
+
+              // Navigate to Create User Screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CreateNewUser(),
+                ),
+              );
+
             },
             icon: const Icon(Icons.add, color: Colors.blue),
             label: const Text(
@@ -76,7 +87,7 @@ class _UsersScreenState extends State<UsersScreen> {
             return const Center(child: Text("No users found"));
           }
 
-          // ✅ Store original + filtered list once
+          // Store users once
           if (_allUsers.isEmpty) {
             _allUsers = users;
             _filteredUsers = users;
@@ -84,24 +95,29 @@ class _UsersScreenState extends State<UsersScreen> {
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                /// ✅ SEARCH BAR (separate widget)
+                // Search Bar
                 UserSearchBar(onSearch: _searchUsers),
+
                 const SizedBox(height: 15),
 
-                /// ✅ TABLE
+                // Users Table
                 Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
+
                       border: TableBorder.all(
                         color: Colors.grey,
                         width: 1.5,
                       ),
+
                       columnSpacing: 20,
+
                       columns: const [
                         DataColumn(label: Text("Name")),
                         DataColumn(label: Text("Email")),
@@ -110,13 +126,18 @@ class _UsersScreenState extends State<UsersScreen> {
                         DataColumn(label: Text("Status")),
                         DataColumn(label: Text("Actions")),
                       ],
+
                       rows: _filteredUsers.map((user) {
+
                         return DataRow(
                           cells: [
 
                             DataCell(Text(user.name)),
+
                             DataCell(Text(user.email ?? "N/A")),
+
                             DataCell(Text(user.phoneNumber)),
+
                             DataCell(Text(user.roleName)),
 
                             DataCell(
@@ -131,27 +152,38 @@ class _UsersScreenState extends State<UsersScreen> {
                               ),
                             ),
 
-                            /// ✅ Edit + Delete buttons
+                            // Edit + Delete
                             DataCell(
                               Row(
                                 children: [
+
                                   IconButton(
-                                    icon: const Icon(Icons.edit, color: Colors.blue),
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.blue,
+                                    ),
                                     onPressed: () {
                                       // Edit user
                                     },
                                   ),
+
                                   IconButton(
-                                    icon: const Icon(Icons.delete, color: Colors.red),
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
                                     onPressed: () {
                                       // Delete user
                                     },
                                   ),
+
                                 ],
                               ),
                             ),
+
                           ],
                         );
+
                       }).toList(),
                     ),
                   ),
@@ -159,21 +191,29 @@ class _UsersScreenState extends State<UsersScreen> {
 
                 const SizedBox(height: 20),
 
-                /// ✅ FOOTER / INFO SECTION
+                // Footer Info
                 Container(
                   padding: const EdgeInsets.all(12),
+
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
                     borderRadius: BorderRadius.circular(10),
                   ),
+
                   child: Row(
                     children: [
+
                       const Icon(Icons.info, color: Colors.blue),
+
                       const SizedBox(width: 10),
+
                       Text(
                         "Total Users: ${_filteredUsers.length}",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+
                     ],
                   ),
                 ),

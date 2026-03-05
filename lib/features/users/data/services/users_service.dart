@@ -50,6 +50,46 @@ class UsersService {
     }
   }
 
+// Get ROLES //
+
+  Future<List<Map<String, dynamic>>> fetchRoles({
+  int limit = 10,
+  int offset = 0,
+}) async {
+
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString("access_token");
+
+  final uri = Uri.parse(
+    "${ApiConstants.baseUrl}/roles",
+  ).replace(queryParameters: {
+    "limit": limit.toString(),
+    "offset": offset.toString(),
+  });
+
+  final response = await http.get(
+    uri,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token",
+    },
+  );
+
+  if (response.statusCode == 200) {
+
+    final data = jsonDecode(response.body);
+
+    final rolesJson = data["data"]["roles"] as List;
+
+    return rolesJson.cast<Map<String, dynamic>>();
+
+  } else {
+
+    throw Exception("Failed to load roles");
+
+  }
+}
+
   /// ===============================
   /// CREATE USER API
   /// ===============================

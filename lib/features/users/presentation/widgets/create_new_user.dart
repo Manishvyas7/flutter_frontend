@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/services/users_service.dart';
+import '../../data/services/roles_service.dart';
+import '../../data/models/role_model.dart';
 
 class CreateNewUser extends StatefulWidget {
   const CreateNewUser({super.key});
@@ -18,18 +20,47 @@ class _CreateNewUserState extends State<CreateNewUser> {
   final TextEditingController _passwordController = TextEditingController();
 
   final UsersService _usersService = UsersService();
+  final RolesService _rolesService = RolesService();
 
   bool _isActive = true;
   bool _obscurePassword = true;
   bool _isLoading = false;
 
-  int? _selectedRole;
+  /// Roles from API
+  List<RoleModel> _roles = [];
+  RoleModel? _selectedRole;
 
-  final Map<int, String> _roles = {
-    1: "Admin",
-    2: "Manager",
-    3: "User",
-  };
+  /// Load roles from API
+  @override
+  void initState() {
+    super.initState();
+    _loadRoles();
+  }
+
+  Future<void> _loadRoles() async {
+
+    try {
+
+      final roles = await _rolesService.fetchRoles();
+
+      setState(() {
+        _roles = roles;
+
+        /// Default role = User
+        _selectedRole = roles.firstWhere(
+          (role) => role.name == "User",
+          orElse: () => roles.first,
+        );
+      });
+
+    } catch (e) {
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to load roles")),
+      );
+
+    }
+  }
 
   /// SUBMIT FORM
   Future<void> _submitForm() async {
@@ -46,7 +77,7 @@ class _CreateNewUserState extends State<CreateNewUser> {
         name: _nameController.text,
         email: _emailController.text,
         phoneNumber: _phoneController.text,
-        roleId: _selectedRole!,
+        roleId: _selectedRole!.id,
         password: _passwordController.text,
         isActive: _isActive,
       );
@@ -205,27 +236,31 @@ class _CreateNewUserState extends State<CreateNewUser> {
 
               const SizedBox(height: 20),
 
-              /// ROLE DROPDOWN
-              DropdownButtonFormField<int>(
+              /// ROLE DROPDOWN FROM API
+              DropdownButtonFormField<RoleModel>(
+
                 value: _selectedRole,
-                items: _roles.entries.map((role) {
-
-                  return DropdownMenuItem(
-                    value: role.key,
-                    child: Text(role.value),
-                  );
-
-                }).toList(),
 
                 decoration: const InputDecoration(
                   labelText: "Select Role",
                   border: OutlineInputBorder(),
                 ),
 
+                items: _roles.map((role) {
+
+                  return DropdownMenuItem<RoleModel>(
+                    value: role,
+                    child: Text(role.name),
+                  );
+
+                }).toList(),
+
                 onChanged: (value) {
+
                   setState(() {
                     _selectedRole = value;
                   });
+
                 },
 
                 validator: (value) {

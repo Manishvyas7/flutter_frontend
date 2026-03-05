@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:flutter_frontend/features/profile/presentation/screens/profile_screens.dart';
 import '../screens/widgets/stats_card.dart';
 import '../screens/widgets/event_card.dart';
@@ -67,7 +69,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 }
 
 //
-// Dashboard Home Page (Now Has Its Own Scaffold)
+// Dashboard Home Page
 //
 
 class DashboardHomePage extends StatelessWidget {
@@ -99,14 +101,75 @@ class DashboardHomePage extends StatelessWidget {
           children: [
             WelcomeSection(),
             SizedBox(height: 20),
+
             UpcomingEventCard(),
             SizedBox(height: 20),
+
             StatsCard(),
             SizedBox(height: 20),
+
             EventCard(),
+            SizedBox(height: 20),
+
+            // 📍 Google Map Section
+            EventLocationMap(),
           ],
         ),
       ),
+    );
+  }
+}
+
+//
+// Google Map Widget
+//
+
+class EventLocationMap extends StatelessWidget {
+  const EventLocationMap({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    const LatLng eventLocation = LatLng(28.6139, 77.2090); // Example Delhi
+
+    final Marker eventMarker = const Marker(
+      markerId: MarkerId("event_location"),
+      position: eventLocation,
+      infoWindow: InfoWindow(
+        title: "Event Location",
+        snippet: "Tap to view",
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Event Location",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        SizedBox(
+          height: 250,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: GoogleMap(
+              initialCameraPosition: const CameraPosition(
+                target: eventLocation,
+                zoom: 14,
+              ),
+              markers: {eventMarker},
+              zoomControlsEnabled: true,
+              mapType: MapType.normal,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
